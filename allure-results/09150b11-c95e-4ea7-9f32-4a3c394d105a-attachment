@@ -1,0 +1,56 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.ts >> Truckbase Authentication >> User can successfully login with valid credentials
+- Location: tests/login.spec.ts:11:7
+
+# Error details
+
+```
+TimeoutError: page.fill: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator('input[type="email"]')
+
+```
+
+# Test source
+
+```ts
+  1  | import { Page, expect, Locator } from '@playwright/test';
+  2  | 
+  3  | export class LoginPage {
+  4  |   readonly page: Page;
+  5  |   readonly signInButton: Locator;
+  6  | 
+  7  |   constructor(page: Page) {
+  8  |     this.page = page;
+  9  |     this.signInButton = page.getByRole('button', { name: /Sign In/i });
+  10 |   }
+  11 | 
+  12 |   async goToLoginPage() {
+  13 |     console.log({ message: 'Navigating to login page' });
+  14 |     await this.page.goto(`${process.env.TRUCKBASE_URL}`);
+  15 |   }
+  16 | 
+> 17 |   async login(username: string, password: string) {
+     |                     ^ TimeoutError: page.fill: Timeout 15000ms exceeded.
+  18 |     console.loge({ message: })
+  19 |     await this.page.fill('input[type="email"]', username);
+  20 |     await this.page.fill('input[type="password"]', password);
+  21 |     await this.signInButton.click();
+  22 |   }
+  23 | 
+  24 |   async waitForDashboard() {
+  25 |     await this.page.waitForURL('**/dashboard');
+  26 |   }
+  27 | 
+  28 |   async assertLoginSuccess() {
+  29 |     await expect(this.page).toHaveTitle(/Dashboard/);
+  30 |   }
+  31 | }
+```

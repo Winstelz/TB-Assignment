@@ -1,0 +1,49 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.ts >> Truckbase Authentication >> User can successfully login with valid credentials
+- Location: tests/login.spec.ts:11:7
+
+# Error details
+
+```
+TimeoutError: page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://urldefense.proofpoint.com/v2/url?u=http-3A__ec2-2D174-2D129-2D140-2D64.compute-2D1.amazonaws.com&d=DwIFaQ&c=0eTCB0nNi4K2jeP4BAvnzcTY3bBUzv8iW-Zx9Sm4vP0&r=64RdgYmQkr4eE8e8wVGdz1aVHe6iear9irCBzToE1bfgxhaeO7zRk7Hp7yTyFUTz&m=Xb4mIgMF6R0tmdYMk7evhPl4r49VyCFcBEVr95eo5S7i3QqHpXIpjr3w5Kly2tWP&s=mJJ_pAF5ejZJBkiWQxO4UksITD0HgIzQQvV82F4zlZQ&e=/login", waiting until "load"
+
+```
+
+# Test source
+
+```ts
+  1  | import { Page, expect } from '@playwright/test';
+  2  | 
+  3  | export class LoginPage {
+  4  |   constructor(private page: Page) {}
+  5  | 
+  6  |   async goToLoginPage() {
+> 7  |     await this.page.goto(`${process.env.TRUCKBASE_URL}/login`);
+     |                     ^ TimeoutError: page.goto: Timeout 30000ms exceeded.
+  8  |   }
+  9  | 
+  10 |   async login(username: string, password: string) {
+  11 |     await this.page.fill('input[type="email"]', username);
+  12 |     await this.page.fill('input[type="password"]', password);
+  13 |     await this.page.click('button:has-text("Login")');
+  14 |   }
+  15 | 
+  16 |   async waitForDashboard() {
+  17 |     await this.page.waitForURL('**/dashboard');
+  18 |   }
+  19 | 
+  20 |   async assertLoginSuccess() {
+  21 |     await expect(this.page).toHaveTitle(/Dashboard|Home/);
+  22 |   }
+  23 | }
+  24 | 
+```

@@ -1,1 +1,1 @@
-# TB-Assignment
+Copy `.env.example` to `.env` and add credentials
