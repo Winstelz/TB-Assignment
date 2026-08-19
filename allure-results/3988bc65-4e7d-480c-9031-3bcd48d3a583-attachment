@@ -1,0 +1,54 @@
+# Instructions
+
+- Following Playwright test failed.
+- Explain why, be concise, respect Playwright best practices.
+- Provide a snippet of code with the fix, if possible.
+
+# Test info
+
+- Name: login.spec.ts >> Truckbase Authentication >> User can successfully login with valid credentials
+- Location: tests/login.spec.ts:11:7
+
+# Error details
+
+```
+TimeoutError: page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "http://ec2-174-129-140-64.compute-1.amazonaws.com/signin/login", waiting until "load"
+
+```
+
+# Test source
+
+```ts
+  1  | import { Page, expect, Locator } from '@playwright/test';
+  2  | 
+  3  | export class LoginPage {
+  4  |   readonly page: Page;
+  5  |   readonly signInButton: Locator;
+  6  | 
+  7  |   constructor(page: Page) {
+  8  |     this.page = page;
+  9  |     this.signInButton = page.getByRole('button', { name: /Sign In/i });
+  10 |   }
+  11 | 
+  12 |   async goToLoginPage() {
+> 13 |     await this.page.goto(`${process.env.TRUCKBASE_URL}/login`);
+     |                     ^ TimeoutError: page.goto: Timeout 30000ms exceeded.
+  14 |   }
+  15 | 
+  16 |   async login(username: string, password: string) {
+  17 |     await this.page.fill('input[type="email"]', username);
+  18 |     await this.page.fill('input[type="password"]', password);
+  19 |     await this.signInButton.click();
+  20 |   }
+  21 | 
+  22 |   async waitForDashboard() {
+  23 |     await this.page.waitForURL('**/dashboard');
+  24 |   }
+  25 | 
+  26 |   async assertLoginSuccess() {
+  27 |     await expect(this.page).toHaveTitle(/Dashboard/);
+  28 |   }
+  29 | }
+```
